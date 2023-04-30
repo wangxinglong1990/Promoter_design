@@ -1,6 +1,7 @@
 import torch
 import PS_modules
 import PA_modules
+import PR_modules
 import numpy as np
 import random
 import argparse
@@ -101,13 +102,17 @@ def predict(num, device='cpu'):
     ##load model
     model_classify = 'PS_best_model.pth'
     model_strength = 'PA_best_model.pth'
+    model_R = 'PR_best.pth'
     device = torch.device('%s'%device)
     promoS_cp = torch.load(model_classify, map_location=device)
     promoA_cp = torch.load(model_strength, map_location=device)
+    promoR_cp = torch.load(model_R, map_location=device)
     promoS = PS_modules.predictor().to(device)
     promoA = PA_modules.predictor().to(device)
+    promoR = PR_modules.predictor().to(device)
     promoS.load_state_dict(promoS_cp['pred'])
     promoA.load_state_dict(promoA_cp['pred'])
+    promoR.load_state_dict(promoR_cp['pred'])
 
     ##predict
     f = open('result_generated.txt', 'w')
@@ -120,13 +125,16 @@ def predict(num, device='cpu'):
         i = i.to(device)
         predict_promoS = promoS(i, 1)
         predict_promoA = promoA(i, 1)
+        predict_promoR = promoR(i, 1)
         predict_promoS = predict_promoS.cpu().detach().numpy()
         predict_promoA = predict_promoA.cpu().detach().numpy()
+        predict_promoR = predict_promoA.cpu().detach().numpy()
         predict_promoS = predict_promoS.reshape(1, )
         predict_promoA = predict_promoA.reshape(1, )
+        predict_promoR = predict_promoR.reshape(1, )
 
-        for j, k in zip(predict_promoS, predict_promoA):
-            f.write('%s %s %s\n'%(str(j), str(k), all_seqs[c - 1]))
+        for j, k, l in zip(predict_promoR, predict_promoS, predict_promoA):
+            f.write('%s %s %s %s\n'%(str(np.round(j)), str(np.round(k)), str(l), all_seqs[c - 1]))
     f.close()
 
 ##for input_sample
@@ -146,13 +154,17 @@ def predict_in(input_file='sample.txt', device='cpu'):
     ##load model
     model_classify = 'PS_best_model.pth'
     model_strength = 'PA_best_model.pth'
+    model_R = 'PR_best.pth'
     device = torch.device('%s'%device)
     promoS_cp = torch.load(model_classify, map_location=device)
     promoA_cp = torch.load(model_strength, map_location=device)
+    promoR_cp = torch.load(model_R, map_location=device)
     promoS = PS_modules.predictor().to(device)
     promoA = PA_modules.predictor().to(device)
+    promoR = PR_modules.predictor().to(device)
     promoS.load_state_dict(promoS_cp['pred'])
     promoA.load_state_dict(promoA_cp['pred'])
+    promoR.load_state_dict(promoR_cp['pred'])
 
     ##predict
     f = open('result_%s'%input_file, 'w')
@@ -165,13 +177,16 @@ def predict_in(input_file='sample.txt', device='cpu'):
         i = i.to(device)
         predict_promoS = promoS(i, 1)
         predict_promoA = promoA(i, 1)
+        predict_promoR = promoR(i, 1)
         predict_promoS = predict_promoS.cpu().detach().numpy()
         predict_promoA = predict_promoA.cpu().detach().numpy()
+        predict_promoR = predict_promoR.cpu().detach().numpy()
         predict_promoS = predict_promoS.reshape(1, )
         predict_promoA = predict_promoA.reshape(1, )
+        predict_promoR = predict_promoR.reshape(1, )
 
-        for j, k in zip(predict_promoS, predict_promoA):
-            f.write('%s %s %s\n'%(str(j), str(k), all_seqs[c*2 - 1]))
+        for j, k, l in zip(predict_promoR, predict_promoS, predict_promoA):
+            f.write('%s %s %s %s\n'%(str(np.round(j)), str(np.round(k)), str(l), all_seqs[c*2 - 1].strip('\n')))
     f.close()
 
 

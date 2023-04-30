@@ -5,12 +5,11 @@ import modules
 from sklearn.linear_model import LinearRegression
 import math
 import os
-import argparse
 
 torch.set_default_tensor_type(torch.DoubleTensor)
 #torch.manual_seed(36)
 
-f = open (r'constraint_based_dataset.txt')
+f = open (r'regPromoter01.txt')
 seqs_activity = f.readlines()
 f.close()
 seqs = []
@@ -167,33 +166,46 @@ def dataTogene(data, bz,name):
 
 for i, data in enumerate (dataloader):
     a,b = data
+    #print(i)
+    #print('a', a)
+    #print('b', b)
+    #print(len(b))
     data = a.cpu().detach().numpy()
+    #print(data)
+    #print(len(data))
     dataTogene(data=data,bz=8,name='%s'%i)
 
 for i, data in enumerate (testloader):
     a,b = data
+    #print(i)
+    #print('a', a)
+    #print('b', b)
+    #print(len(b))
     data = a.cpu().detach().numpy()
+    #print(data)
+    #print(len(data))
     dataTogene(data=data,bz=40,name='testloader')
 
-def train(epochs=10000, lr=1e-3, device='cpu'):
-    device = torch.device('%s'%device)
-    p = modules.predictor().to(device)
-    print(device)
-    optimizer = torch.optim.Adam(p.parameters(),lr=lr,weight_decay=1e-4)
-    loss_fn = torch.nn.MSELoss()
+device = torch.device('cpu')
+p = modules.predictor().to(device)
+print(device)
+optimizer = torch.optim.Adam(p.parameters(),lr=1e-3,weight_decay=1e-4)
+loss_fn = torch.nn.MSELoss()
+train_loss = []
 
-    f = open('epoch_loss.txt','w')
-    f.close()
-    f = open('accuracy.txt','w')
-    f.close()
-    f = open('predictValue.txt','w')
-    f.close()
+f = open('epoch_loss.txt','w')
+f.close()
+f = open('accuracy.txt','w')
+f.close()
+f = open('predictValue.txt','w')
+f.close()
 
-    model = LinearRegression()
-    if not os.path.exists('saved_models'):
-        os.mkdir('saved_models')
+model = LinearRegression()
+if not os.path.exists('saved_models'):
+    os.mkdir('saved_models')
 
-    for epoch in range (epochs):
+def train():
+    for epoch in range (10000):
         epoch_loss = 0
 
         count = 0
@@ -202,8 +214,11 @@ def train(epochs=10000, lr=1e-3, device='cpu'):
             count += 1
             x,y = data
             x = x.reshape(8,1,4,50)
+
             x, y = x.to(device), y.to(device)
+
             output = p(x,8)
+
             y = y.reshape(8,1)
 
             p_loss = loss_fn(output,y)
@@ -240,20 +255,14 @@ def train(epochs=10000, lr=1e-3, device='cpu'):
                 score = model.score(a,b)
                 cof += float(score)
 
-                cof = math.sqrt(cof)
-                print(epoch,score)
-                f = open('accuracy.txt','a+')
-                f.write('epoch %s %s\n'%(epoch,cof))
+            cof = math.sqrt(cof)
+            print(epoch,score)
+            f = open('accuracy.txt','a+')
+            f.write('epoch %s %s\n'%(epoch,cof))
+            f.close()
+            if epoch > 50:
+                f = open('predictValue.txt','a+')
+                f.write('epoch %s \n%s\n%s\n'%(epoch,str(a).replace('[','').replace(']',''),str(b).replace('[','').replace(']','')))
                 f.close()
-                if epoch > 50:
-                    f = open('predictValue.txt','a+')
-                    f.write('epoch %s \n%s\n%s\n'%(epoch,str(a).replace('[','').replace(']',''),str(b).replace('[','').replace(']','')))
-                    f.close()
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-epochs', dest='epochs', type=int)
-    parser.add_argument('-lr', dest='lr', type=int)
-    parser.add_argument('-device', dest='device', type=str)
-    args = parser.parse_args()
-    train(epochs='%s'%args.epochs, lr='%s'%args.lr, device='%s'%args.device)
+    train()
