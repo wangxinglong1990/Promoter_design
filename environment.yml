@@ -1,0 +1,55 @@
+name: promoter_design
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - _openmp_mutex=5.1=1_gnu
+  - blas=1.0=mkl
+  - ca-certificates=2022.07.19=h06a4308_0
+  - certifi=2021.5.30=py36h06a4308_0
+  - cffi=1.14.6=py36hc120d54_0
+  - cudatoolkit=11.7.0=hd8887f6_10
+  - cudnn=8.2.1.32=h86fa8c9_0
+  - dataclasses=0.8=pyh787bdff_2
+  - future=0.18.2=py36h5fab9bb_3
+  - intel-openmp=2021.4.0=h06a4308_3561
+  - joblib=1.0.1=pyhd3eb1b0_0
+  - ld_impl_linux-64=2.38=h1181459_1
+  - libblas=3.9.0=12_linux64_mkl
+  - libcblas=3.9.0=12_linux64_mkl
+  - libffi=3.3=he6710b0_2
+  - libgcc-ng=11.2.0=h1234567_1
+  - libgfortran-ng=7.5.0=ha8ba4b0_17
+  - libgfortran4=7.5.0=ha8ba4b0_17
+  - libgomp=11.2.0=h1234567_1
+  - liblapack=3.9.0=12_linux64_mkl
+  - libprotobuf=3.18.0=h780b84a_1
+  - libstdcxx-ng=11.2.0=h1234567_1
+  - magma=2.5.4=h6103c52_2
+  - mkl=2021.4.0=h06a4308_640
+  - nccl=2.12.12.1=h0800d71_0
+  - ncurses=6.3=h5eee18b_3
+  - ninja=1.11.0=h924138e_0
+  - numpy=1.19.5=py36hfc0c790_2
+  - openssl=1.1.1q=h7f8727e_0
+  - pip=21.2.2=py36h06a4308_0
+  - pycparser=2.21=pyhd8ed1ab_0
+  - python=3.6.13=h12debd9_1
+  - python_abi=3.6=2_cp36m
+  - pytorch=1.9.1=cuda112py36h36e649e_3
+  - pytorch-gpu=1.9.1=cuda112py36h0bbbad9_3
+  - readline=8.1.2=h7f8727e_1
+  - scikit-learn=0.24.2=py36ha9443f7_0
+  - scipy=1.1.0=py36hfa4b5c9_1
+  - setuptools=58.0.4=py36h06a4308_0
+  - sleef=3.5.1=h9b69904_2
+  - sqlite=3.39.2=h5082296_0
+  - threadpoolctl=2.2.0=pyh0d69192_0
+  - tk=8.6.12=h1ccaba5_0
+  - typing_extensions=4.1.1=pyha770c72_0
+  - wheel=0.37.1=pyhd3eb1b0_0
+  - xz=5.2.6=h5eee18b_0
+  - zlib=1.2.12=h5eee18b_3
+prefix: /home/amax/.conda/envs/promoGAN
